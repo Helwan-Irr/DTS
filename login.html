@@ -18,12 +18,10 @@
     </style>
 </head>
 <body>
-
     <div class="login-card">
         <i class="fas fa-university fa-3x" style="color: #2c3e50; margin-bottom: 15px;"></i>
         <h2>منظومة ري حلوان الرقمية</h2>
         <p>يرجى تسجيل الدخول باستخدام حساب جوجل الرسمي</p>
-        
         <button class="google-btn" onclick="loginWithGoogle()">
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg">
             الدخول عبر جوجل
@@ -34,26 +32,23 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 
     <script>
-        // ضع إعدادات Firebase الخاصة بك هنا (التي نسختها سابقاً)
+        // البيانات المستخرجة من صورتك لمشروع DTS-Helwan
         const firebaseConfig = {
-            apiKey: "AIzaSy...",
+            apiKey: "AIzaSyBq2sDkdYb5CdDtxBQA82jhh1jfaQvIjVM",
             authDomain: "dts-helwan.firebaseapp.com",
             projectId: "dts-helwan",
-            storageBucket: "dts-helwan.appspot.com",
-            messagingSenderId: "...",
-            appId: "..."
+            storageBucket: "dts-helwan.firebasestorage.app",
+            messagingSenderId: "95183261793",
+            appId: "1:95183261793:web:48edf7d6ae44948dc61a20",
+            measurementId: "G-T0PK45JDTW"
         };
         firebase.initializeApp(firebaseConfig);
 
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithPopup(provider)
-                .then((result) => {
-                    // نجاح الدخول -> التوجه للـ Dashboard
-                    window.location.href = "index.html";
-                }).catch((error) => {
-                    alert("حدث خطأ أثناء تسجيل الدخول: " + error.message);
-                });
+                .then(() => { window.location.href = "index.html"; })
+                .catch((error) => { alert("خطأ: " + error.message); });
         }
     </script>
 </body>
