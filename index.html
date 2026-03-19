@@ -47,8 +47,7 @@
 
         <div class="form-group">
             <label>الجهة (المستخرجة من النموذج)</label>
-            <select id="entity">
-                </select>
+            <select id="entity"></select>
         </div>
 
         <div class="form-group">
@@ -68,7 +67,7 @@
     </div>
     
     <button onclick="submitData()">حفظ البيانات في المنظومة</button>
-    <div id="loader">جاري المعالجة والرفع للسحابة...</div>
+    <div id="loader">جاري المعالجة والرفع للسحابة... يرجى الانتظار</div>
 
     <hr style="margin: 3rem 0; border: 0; border-top: 2px solid #eee;">
 
@@ -98,22 +97,11 @@
         clPreset: 'Helwan Irrigation DTS'
     };
 
-    // قائمة الجهات المستخلصة من نموذج Google المرفق (بدون تكرار)
-    const unifiedEntities = [
-        "الوزارة",
-         "رئيس القطاع",
-        "الإدارة المركزية",
-        "هندسة حلوان",
-        "هندسة الصف",
-        "هندسة أطفيح",
-        "سايرة",
-        "جهات أخرى"
-    ];
+    const unifiedEntities = ["الوزارة", "رئيس القطاع", "الإدارة المركزية", "هندسة حلوان", "هندسة الصف", "هندسة أطفيح", "سايرة", "جهات أخرى"];
 
     function updateEntities() {
         const entitySelect = document.getElementById('entity');
         entitySelect.innerHTML = ""; 
-        
         unifiedEntities.forEach(name => {
             let option = document.createElement("option");
             option.value = name;
@@ -122,12 +110,9 @@
         });
     }
 
-    // ضبط التاريخ التلقائي وجلب البيانات عند التحميل
     window.onload = () => {
         const dateInput = document.getElementById('docDate');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today; // اقتراح تاريخ اليوم تلقائياً
-
+        dateInput.value = new Date().toISOString().split('T')[0];
         updateEntities();
         loadEntries();
     };
@@ -135,7 +120,6 @@
     async function submitData() {
         const file = document.getElementById('fileUpload').files[0];
         if (!file) return alert("يرجى اختيار ملف أولاً");
-
         document.getElementById('loader').style.display = 'block';
 
         try {
@@ -146,7 +130,7 @@
             const clData = await clRes.json();
 
             const entry = {
-                date: document.getElementById('docDate').value, // استخدام التاريخ المختار
+                date: document.getElementById('docDate').value,
                 type: document.getElementById('type').value,
                 number: document.getElementById('docNumber').value,
                 entity: document.getElementById('entity').value,
@@ -159,34 +143,43 @@
             location.reload();
         } catch (e) {
             alert("فشل النظام: " + e.message);
+            document.getElementById('loader').style.display = 'none';
         }
     }
 
+    // دالة الحفظ المطورة لمعالجة اللغة العربية
     async function updateGitHub(newEntry) {
         const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
         const res = await fetch(url, { headers: {'Authorization': `token ${GITHUB_TOKEN}`} });
         const file = await res.json();
-        let content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
+        
+        let content = JSON.parse(decodeURIComponent(escape(window.atob(file.content))));
         content.push(newEntry);
+
+        const updatedContent = window.btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
 
         await fetch(url, {
             method: 'PUT',
             headers: {'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 message: "إضافة خطاب بتاريخ " + newEntry.date,
-                content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+                content: updatedContent,
                 sha: file.sha
             })
         });
     }
 
+    // دالة جلب البيانات المطورة لمنع خطأ atob
     async function loadEntries() {
         const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
         try {
             const res = await fetch(url, { headers: {'Authorization': `token ${GITHUB_TOKEN}`} });
             const file = await res.json();
-            const data = JSON.parse(decodeURIComponent(escape(atob(file.content))));
+            
+            const data = JSON.parse(decodeURIComponent(escape(window.atob(file.content))));
             const tbody = document.querySelector("#dataTable tbody");
+            tbody.innerHTML = ""; 
+            
             data.reverse().forEach(item => {
                 tbody.innerHTML += `<tr>
                     <td>${item.date}</td><td>${item.type}</td><td>${item.number}</td>
@@ -194,7 +187,7 @@
                     <td><a href="${item.link}" target="_blank" class="btn-link">فتح</a></td>
                 </tr>`;
             });
-        } catch (e) { console.log("لا توجد بيانات"); }
+        } catch (e) { console.log("السجل فارغ أو حدث خطأ في الجلب"); }
     }
 </script>
 
