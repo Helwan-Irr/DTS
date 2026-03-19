@@ -2,70 +2,37 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة DTS - ري حلوان</title>
-    
+    <title>لوحة تحكم DTS - ري حلوان</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root { --primary: #2c3e50; --secondary: #27ae60; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; display: none; }
-        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--secondary); }
-        .user-info { display: flex; align-items: center; gap: 15px; }
-        .user-info img { width: 40px; border-radius: 50%; border: 2px solid var(--secondary); }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .welcome-section { text-align: center; margin-bottom: 40px; }
-        .welcome-section h1 { color: var(--primary); margin: 0; font-size: 2.5rem; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; border-right: 6px solid var(--secondary); }
-        .card i { font-size: 3rem; color: var(--secondary); }
-        .card h3 { margin: 0; color: #7f8c8d; font-size: 1.1rem; }
-        .card p { margin: 5px 0 0; font-size: 2rem; font-weight: bold; color: var(--primary); }
-        .main-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-        .action-box { background: white; padding: 50px; border-radius: 20px; text-align: center; text-decoration: none; color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: 0.3s; border: 1px solid #eee; }
-        .action-box:hover { transform: translateY(-10px); border-color: var(--secondary); }
-        .action-box i { font-size: 4rem; color: var(--primary); margin-bottom: 20px; }
-        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Segoe UI'; background: var(--bg); margin: 0; display: none; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; text-align: center; }
+        .main-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px; }
+        .action-box { background: white; padding: 40px; border-radius: 15px; text-decoration: none; color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .action-box:hover { transform: translateY(-5px); }
+        .action-box i { font-size: 3rem; margin-bottom: 20px; display: block; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-
     <header>
-        <div class="user-info">
-            <img id="userImg" src="" alt="">
-            <span id="userName">جاري التحميل...</span>
-        </div>
-        <div class="logo"><b>منظومة DTS - ري حلوان</b></div>
-        <button class="btn-logout" onclick="logout()">تسجيل خروج</button>
+        <div><span id="userName">...</span></div>
+        <b>منظومة DTS - إدارة ري حلوان</b>
+        <button class="btn-logout" onclick="logout()">خروج</button>
     </header>
 
     <div class="container">
-        <div class="welcome-section">
-            <h1>لوحة تحكم التحول الرقمي</h1>
-            <p>إدارة بيانات الخطابات والمراسلات - هندسة حلوان وأطفيح</p>
-        </div>
-
-        <div class="stats">
-            <div class="card">
-                <i class="fas fa-file-download"></i>
-                <div><h3>إجمالي الوارد</h3><p id="inCount">0</p></div>
-            </div>
-            <div class="card">
-                <i class="fas fa-file-upload"></i>
-                <div><h3>إجمالي الصادر</h3><p id="outCount">0</p></div>
-            </div>
-        </div>
-
+        <h1>مرحباً بك في الأرشيف الرقمي</h1>
         <div class="main-actions">
             <a href="add-letter.html" class="action-box">
-                <i class="fas fa-folder-plus"></i>
+                <i class="fas fa-plus-circle"></i>
                 <h2>إضافة خطاب جديد</h2>
-                <p>تسجيل بيانات الوارد والصادر وتصوير المستندات</p>
             </a>
             <a href="manage-letters.html" class="action-box">
-                <i class="fas fa-database"></i>
-                <h2>الأرشيف الإلكتروني</h2>
-                <p>البحث في المراسلات واستخراج التقارير</p>
+                <i class="fas fa-search"></i>
+                <h2>البحث في الأرشيف</h2>
             </a>
         </div>
     </div>
@@ -75,31 +42,27 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
     <script>
-        // تم ملء البيانات بناءً على صور مشروعك dts-helwan
         const firebaseConfig = {
-            apiKey: "AIzaSyBq2sDkdYb5cdDtxBQA82jhh1jfaQvIjVM", 
+            apiKey: "AIzaSyBq2sDkdYb5CdDtxBQA82jhh1jfaQvIjVM",
             authDomain: "dts-helwan.firebaseapp.com",
             projectId: "dts-helwan",
-            storageBucket: "dts-helwan.appspot.com",
+            storageBucket: "dts-helwan.firebasestorage.app",
             messagingSenderId: "95183261793",
             appId: "1:95183261793:web:48edf7d6ae44948dc61a20"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // فحص الصلاحية في Firestore
+                // التأكد من أن الإيميل مسموح له بالدخول
                 db.collection("authorized_emails").doc(user.email).get().then((doc) => {
                     if (doc.exists) {
                         document.body.style.display = "block";
                         document.getElementById('userName').innerText = user.displayName;
-                        document.getElementById('userImg').src = user.photoURL;
-                        updateStats();
                     } else {
-                        alert("عذراً، هذا الحساب (" + user.email + ") غير مصرح له بالدخول.");
+                        alert("عذراً، هذا الحساب غير مضاف في المنظومة.");
                         auth.signOut();
                     }
                 });
@@ -108,13 +71,8 @@
             }
         });
 
-        async function updateStats() {
-            const snap = await db.collection("letters").get();
-            document.getElementById('inCount').innerText = snap.size; 
-        }
-
         function logout() {
-            auth.signOut().then(() => window.location.href = "login.html");
+            auth.signOut().then(() => { window.location.href = "login.html"; });
         }
     </script>
 </body>
