@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>دخول منظومة DTS - ري حلوان</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI'; background: #f4f7f6; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .google-btn { 
+            display: flex; align-items: center; justify-content: center;
+            background: white; color: #757575; border: 1px solid #ddd;
+            padding: 12px; border-radius: 5px; cursor: pointer; font-size: 1.1rem;
+            transition: 0.3s; font-weight: bold; width: 100%; margin-top: 20px;
+        }
+        .google-btn:hover { background: #f1f1f1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .google-btn img { width: 20px; margin-left: 10px; }
+    </style>
+</head>
+<body>
 
+    <div class="login-card">
+        <i class="fas fa-university fa-3x" style="color: #2c3e50; margin-bottom: 15px;"></i>
+        <h2>منظومة ري حلوان الرقمية</h2>
+        <p>يرجى تسجيل الدخول باستخدام حساب جوجل الرسمي</p>
+        
+        <button class="google-btn" onclick="loginWithGoogle()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg">
+            الدخول عبر جوجل
+        </button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // ضع إعدادات Firebase الخاصة بك هنا (التي نسختها سابقاً)
+        const firebaseConfig = {
+            apiKey: "AIzaSy...",
+            authDomain: "dts-helwan.firebaseapp.com",
+            projectId: "dts-helwan",
+            storageBucket: "dts-helwan.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    // نجاح الدخول -> التوجه للـ Dashboard
+                    window.location.href = "index.html";
+                }).catch((error) => {
+                    alert("حدث خطأ أثناء تسجيل الدخول: " + error.message);
+                });
+        }
+    </script>
+</body>
+</html>
