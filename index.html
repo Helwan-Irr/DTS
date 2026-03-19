@@ -2,124 +2,103 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منظومة ري حلوان - DTS</title>
     <style>
         :root { --primary: #006633; --accent: #cc9900; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; color: #333; }
-        header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; border-bottom: 4px solid var(--accent); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; color: #333; direction: rtl; }
+        header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; border-bottom: 4px solid var(--accent); }
         .container { max-width: 1000px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; margin-bottom: 0.5rem; color: var(--primary); }
         input, select { padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
         .full-width { grid-column: span 2; }
-        button { background: var(--primary); color: white; border: none; padding: 1rem 2rem; border-radius: 6px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; width: 100%; }
-        button:hover { background: #004d26; transform: translateY(-2px); }
+        button { background: var(--primary); color: white; border: none; padding: 1rem 2rem; border-radius: 6px; cursor: pointer; font-size: 1.1rem; font-weight: bold; width: 100%; }
         #loader { display: none; color: var(--accent); font-weight: bold; text-align: center; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
         th, td { padding: 12px; border: 1px solid #ddd; text-align: right; }
         th { background: #f8f8f8; }
-        .btn-link { color: var(--primary); font-weight: bold; text-decoration: none; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>الإدارة العامة لري حلوان</h1>
-    <p>نظام التحول الرقمي وإدارة المكاتبات (DTS)</p>
+    <p>نظام DTS المطور</p>
 </header>
 
 <div class="container">
     <div class="grid-form">
-        <div class="form-group full-width">
-            <label>تاريخ الخطاب</label>
-            <input type="date" id="docDate">
-        </div>
-
+        <div class="form-group full-width"><label>تاريخ الخطاب</label><input type="date" id="docDate"></div>
         <div class="form-group">
             <label>نوع الخطاب</label>
-            <select id="type" onchange="updateEntities()">
-                <option value="وارد">وارد</option>
-                <option value="صادر">صادر</option>
+            <select id="type">
+                <option>وارد وزارة</option><option>صادر وزارة</option>
+                <option>وارد الإدارة المركزية</option><option>صادر الإدارة المركزية</option>
+                <option>هندسة حلوان</option><option>هندسة الصف</option>
+                <option>هندسة أطفيح</option><option>سايرة</option>
             </select>
         </div>
-
-        <div class="form-group">
-            <label>الجهة (المستخرجة من النموذج)</label>
-            <select id="entity"></select>
-        </div>
-
-        <div class="form-group">
-            <label>رقم الخطاب</label>
-            <input type="text" id="docNumber" placeholder="أدخل الرقم">
-        </div>
-
-        <div class="form-group">
-            <label>الموضوع</label>
-            <input type="text" id="subject" placeholder="نبذة عن الخطاب">
-        </div>
-
-        <div class="form-group full-width">
-            <label>إرفاق الملف (صورة أو PDF)</label>
-            <input type="file" id="fileUpload" accept="image/*,application/pdf">
-        </div>
+        <div class="form-group"><label>رقم الخطاب</label><input type="text" id="docNumber"></div>
+        <div class="form-group full-width"><label>الموضوع</label><input type="text" id="subject"></div>
+        <div class="form-group full-width"><label>إرفاق الملف</label><input type="file" id="fileUpload"></div>
     </div>
-    
-    <button onclick="submitData()">حفظ البيانات في المنظومة</button>
-    <div id="loader">جاري المعالجة والرفع للسحابة... يرجى الانتظار</div>
-
-    <hr style="margin: 3rem 0; border: 0; border-top: 2px solid #eee;">
-
-    <h2>سجل المكاتبات الأخير</h2>
+    <button onclick="submitData()">حفظ في المنظومة</button>
+    <div id="loader">جاري المعالجة...</div>
     <table id="dataTable">
-        <thead>
-            <tr>
-                <th>التاريخ</th>
-                <th>النوع</th>
-                <th>الرقم</th>
-                <th>الجهة</th>
-                <th>الموضوع</th>
-                <th>المرفق</th>
-            </tr>
-        </thead>
+        <thead><tr><th>التاريخ</th><th>النوع</th><th>الرقم</th><th>الموضوع</th><th>المرفق</th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
 
 <script>
-    const GITHUB_TOKEN = 'ghp_mB85YIiwivI6rAw5JM0z68EvXqRc1n4A207g';
+    const GITHUB_TOKEN = 'ghp_mB85YIiwivI6rAw5JM0z68EvXqRc1n4A207g'; //
     const CONFIG = {
-        owner: 'Helwan-Irr',
-        repo: 'DTS',
+        owner: 'Helwan-Irr', //
+        repo: 'DTS', 
         path: 'data/database.json',
-        clName: 'dtfointih',
-        clPreset: 'Helwan Irrigation DTS'
+        clName: 'dtfointih', //
+        clPreset: 'Helwan Irrigation DTS' //
     };
 
-    const unifiedEntities = ["الوزارة", "رئيس القطاع", "الإدارة المركزية", "هندسة حلوان", "هندسة الصف", "هندسة أطفيح", "سايرة", "جهات أخرى"];
-
-    function updateEntities() {
-        const entitySelect = document.getElementById('entity');
-        entitySelect.innerHTML = ""; 
-        unifiedEntities.forEach(name => {
-            let option = document.createElement("option");
-            option.value = name;
-            option.text = name;
-            entitySelect.appendChild(option);
-        });
-    }
-
     window.onload = () => {
-        const dateInput = document.getElementById('docDate');
-        dateInput.value = new Date().toISOString().split('T')[0];
-        updateEntities();
+        document.getElementById('docDate').valueAsDate = new Date();
         loadEntries();
     };
 
+    // دالة فك التشفير الآمنة (تدعم العربية)
+    function safeAtob(str) {
+        try {
+            return decodeURIComponent(escape(window.atob(str)));
+        } catch (e) {
+            console.error("خطأ في التشفير، سيتم إرجاع سجل فارغ");
+            return "[]";
+        }
+    }
+
+    // دالة التشفير الآمنة (تدعم العربية)
+    function safeBtoa(str) {
+        return window.btoa(unescape(encodeURIComponent(str)));
+    }
+
+    async function loadEntries() {
+        try {
+            const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+                headers: {'Authorization': `token ${GITHUB_TOKEN}`}
+            });
+            const file = await res.json();
+            const data = JSON.parse(safeAtob(file.content));
+            const tbody = document.querySelector("#dataTable tbody");
+            tbody.innerHTML = "";
+            data.reverse().slice(0, 20).forEach(item => {
+                tbody.innerHTML += `<tr><td>${item.date}</td><td>${item.type}</td><td>${item.number}</td><td>${item.subject}</td><td><a href="${item.link}" target="_blank">فتح</a></td></tr>`;
+            });
+        } catch (e) { console.log("السجل يحتاج تهيئة أو فارغ"); }
+    }
+
     async function submitData() {
         const file = document.getElementById('fileUpload').files[0];
-        if (!file) return alert("يرجى اختيار ملف أولاً");
+        if (!file) return alert("اختر ملفاً");
         document.getElementById('loader').style.display = 'block';
 
         try {
@@ -133,63 +112,34 @@
                 date: document.getElementById('docDate').value,
                 type: document.getElementById('type').value,
                 number: document.getElementById('docNumber').value,
-                entity: document.getElementById('entity').value,
                 subject: document.getElementById('subject').value,
                 link: clData.secure_url
             };
 
-            await updateGitHub(entry);
-            alert("تم الحفظ بنجاح!");
+            const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
+            const res = await fetch(url, { headers: {'Authorization': `token ${GITHUB_TOKEN}`} });
+            const fileData = await res.json();
+            
+            let content = JSON.parse(safeAtob(fileData.content));
+            content.push(entry);
+
+            await fetch(url, {
+                method: 'PUT',
+                headers: {'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    message: "Update Record",
+                    content: safeBtoa(JSON.stringify(content, null, 2)),
+                    sha: fileData.sha
+                })
+            });
+
+            alert("تم الحفظ!");
             location.reload();
         } catch (e) {
-            alert("فشل النظام: " + e.message);
+            alert("فشل: " + e.message);
             document.getElementById('loader').style.display = 'none';
         }
     }
-
-    // دالة الحفظ المطورة لمعالجة اللغة العربية
-    async function updateGitHub(newEntry) {
-        const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
-        const res = await fetch(url, { headers: {'Authorization': `token ${GITHUB_TOKEN}`} });
-        const file = await res.json();
-        
-        let content = JSON.parse(decodeURIComponent(escape(window.atob(file.content))));
-        content.push(newEntry);
-
-        const updatedContent = window.btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
-
-        await fetch(url, {
-            method: 'PUT',
-            headers: {'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                message: "إضافة خطاب بتاريخ " + newEntry.date,
-                content: updatedContent,
-                sha: file.sha
-            })
-        });
-    }
-
-    // دالة جلب البيانات المطورة لمنع خطأ atob
-    async function loadEntries() {
-        const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
-        try {
-            const res = await fetch(url, { headers: {'Authorization': `token ${GITHUB_TOKEN}`} });
-            const file = await res.json();
-            
-            const data = JSON.parse(decodeURIComponent(escape(window.atob(file.content))));
-            const tbody = document.querySelector("#dataTable tbody");
-            tbody.innerHTML = ""; 
-            
-            data.reverse().forEach(item => {
-                tbody.innerHTML += `<tr>
-                    <td>${item.date}</td><td>${item.type}</td><td>${item.number}</td>
-                    <td>${item.entity}</td><td>${item.subject}</td>
-                    <td><a href="${item.link}" target="_blank" class="btn-link">فتح</a></td>
-                </tr>`;
-            });
-        } catch (e) { console.log("السجل فارغ أو حدث خطأ في الجلب"); }
-    }
 </script>
-
 </body>
 </html>
